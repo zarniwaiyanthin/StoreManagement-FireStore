@@ -56,7 +56,7 @@ class CartActivity:BaseActivity() {
             }
         })
 
-        productViewModel.error.observe(this, Observer {
+        productViewModel.errorMessage.observe(this, Observer {
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         })
 
@@ -94,7 +94,7 @@ class CartActivity:BaseActivity() {
             }
         })
 
-        productViewModel.error.observe(this, Observer {
+        productViewModel.errorMessage.observe(this, Observer {
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         })
     }

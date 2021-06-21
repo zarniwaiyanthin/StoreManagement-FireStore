@@ -66,15 +66,12 @@ class LoginActivity:BaseActivity() {
         })
 
         loginViewModel.user.observe(this, Observer { user->
-            val userId=user.userId?:-1
-            if (userId>0){
                 val pref=getSharedPreferences(Constants.SHARE_PREF_NAME, Context.MODE_PRIVATE)
                     .edit()
-                    .putInt(Constants.KEY_USER_ID,userId)
+                    .putString(Constants.KEY_USER_ID,user)
                     .apply()
                 startActivity(MainActivity.newIntent(this))
                 finish()
-            }
         })
     }
 }

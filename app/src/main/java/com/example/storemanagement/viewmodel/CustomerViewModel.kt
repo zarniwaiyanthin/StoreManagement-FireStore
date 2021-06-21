@@ -7,86 +7,79 @@ import com.example.storemanagement.model.AddCustomerResponse
 import com.example.storemanagement.model.Customer
 import com.example.storemanagement.model.CustomerListResponse
 import com.example.storemanagement.model.RemoveResponse
+import com.google.firebase.firestore.FirebaseFirestore
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class CustomerViewModel:BaseViewModel() {
     val isLoading= MutableLiveData<Boolean>()
-    val error= MutableLiveData<String>()
+    val errorMessage= MutableLiveData<String>()
     val customerList= MutableLiveData<List<Customer>>()
     val responseMessage=MutableLiveData<String>()
     val isDelete=MutableLiveData<Boolean>()
 
     fun getCustomerList(userId:Int){
         isLoading.value=true
-        RestClient.getApiService()
-            .getCustomerList(userId)
-            .enqueue(object :Callback<CustomerListResponse>{
-                override fun onFailure(call: Call<CustomerListResponse>, t: Throwable) {
-                    isLoading.value=false
-                    error.value=t.message?:"Unknown Error"
-                }
 
-                override fun onResponse(
-                    call: Call<CustomerListResponse>,
-                    response: Response<CustomerListResponse>
-                ) {
-                    if (response.isSuccessful){
-                        isLoading.value=false
-                        response.body()?.let {body->
-                            customerList.value=body.data?: listOf()
- //                           error.value=body.error?.firstOrNull()?.errorMessage?:"Unknown Error"
-                        }
+        FirebaseFirestore.getInstance().collection("customers")
+            .addSnapshotListener { value, error ->
+                isLoading.value=false
+                if (value==null || value.isEmpty){
+                    errorMessage.value=error.toString()
+                }else{
+                    val customers= mutableListOf<Customer>()
+                    for (document in value.documents){
+                        customers.add(
+                            Customer(
+                                id = document["id"] as Int,
+                                name = document["name"] as String,
+                                phoneNo = document["phoneNo"] as String
+                            )
+                        )
                     }
+                    customerList.value=customers
                 }
-            })
+            }
     }
 
     fun addCustomer(req: AddCustomerRequest){
         isLoading.value=true
-        RestClient.getApiService()
-                .addCustomer(req)
-                .enqueue(object :Callback<AddCustomerResponse>{
-                    override fun onFailure(call: Call<AddCustomerResponse>, t: Throwable) {
-                        isLoading.value=false
-                        error.value=t.message?:"Unknown Error"
-                    }
 
-                    override fun onResponse(call: Call<AddCustomerResponse>, response: Response<AddCustomerResponse>) {
-                        if (response.isSuccessful){
-                            isLoading.value=false
-                            response.body()?.let {
-                                responseMessage.value=it.responseMessage
-//                                error.value=it.error?.firstOrNull()?.errorMessage?:"Unknown Error"
-                            }
-                        }
-                    }
-                })
+        FirebaseFirestore.getInstance().collection("customers")
+            .add(
+                mapOf(
+                    "id" to req.userId,
+                    "name" to req.name,
+                    "phoneNo" to req.phoneNo
+                )
+            )
+            .addOnCompleteListener {
+                isLoading.value=false
+                if(it.isSuccessful){
+                    responseMessage.value="Success"
+                }else{
+                    errorMessage.value=it.exception?.message?:"Unknown Error"
+                }
+            }
     }
 
     fun removeCustomer(customerId:Int){
         isLoading.value=true
-        RestClient.getApiService()
-                .removeCustomer(customerId)
-                .enqueue(object:retrofit2.Callback<RemoveResponse>{
-                    override fun onFailure(call: Call<RemoveResponse>, t: Throwable) {
-                        isLoading.value=false
-                        error.value=t.message?:"Unknown Error"
-                    }
 
-                    override fun onResponse(call: Call<RemoveResponse>, response: Response<RemoveResponse>) {
-                        isLoading.value=false
-                        if (response.isSuccessful){
-                            response.body()?.let {
-                                responseMessage.value=it.responseMessage
-                                isDelete.value=it.data?:false
-//                                error.value=it.error?.firstOrNull()?.errorMessage?:"Unknown Error"
-                            }
-                        }else{
-                            isDelete.value=false
-                        }
+        FirebaseFirestore.getInstance().collection("customers")
+            .whereEqualTo("id",customerId)
+            .get()
+            .addOnCompleteListener {
+                isLoading.value=false
+                if (it.isSuccessful){
+                    for (document in it.result!!){
+                        FirebaseFirestore.getInstance().collection("customers").document(document.id)
                     }
-                })
+                    responseMessage.value="Success"
+                }else{
+                    errorMessage.value="Error"
+                }
+            }
     }
 }

@@ -57,7 +57,7 @@ class ProductListActivity:BaseActivity(),ProductListListener {
             }
         })
 
-        productViewModel.error.observe(this, Observer { error->
+        productViewModel.errorMessage.observe(this, Observer { error->
             Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
         })
 
@@ -104,7 +104,7 @@ class ProductListActivity:BaseActivity(),ProductListListener {
             }
         })
 
-        productViewModel.error.observe(this, Observer {
+        productViewModel.errorMessage.observe(this, Observer {
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         })
     }
