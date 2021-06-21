@@ -3,6 +3,7 @@ package com.example.storemanagement.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -47,10 +48,22 @@ class CartActivity:BaseActivity() {
             }
         })
 
+        productViewModel.isLoading.observe(this, Observer {
+            if (it){
+                progressBar.visibility=View.VISIBLE
+            }else{
+                progressBar.visibility=View.INVISIBLE
+            }
+        })
+
+        productViewModel.error.observe(this, Observer {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        })
+
         btnDone.setOnClickListener {
-            val productIdList= mutableListOf<String>()
+            val productIdList= mutableListOf<Int>()
             for (product in chooseProductAdapter.selectedItemList){
-                productIdList.add(product.productId?:"")
+                productIdList.add(product.productId!!.toInt())
             }
             val req=Add2CartRequest(
                     customerId = customerId,
@@ -75,9 +88,9 @@ class CartActivity:BaseActivity() {
 
         productViewModel.isLoading.observe(this, Observer {
             if (it){
-                //todo: show loading
+                progressBar.visibility= View.VISIBLE
             }else{
-                //todo: hide loading
+                progressBar.visibility=View.INVISIBLE
             }
         })
 

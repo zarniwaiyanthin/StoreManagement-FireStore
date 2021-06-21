@@ -16,8 +16,6 @@ class LoginViewModel:BaseViewModel() {
 
     fun login(req: LoginRequest){
         isLoading.value=true
-        user.value=mockLogin()
-        return
         RestClient.getApiService()
             .login(req)
             .enqueue(object: Callback<LoginResponse> {
@@ -33,13 +31,11 @@ class LoginViewModel:BaseViewModel() {
                     if (response.isSuccessful){
                         isLoading.value=false
                         response.body()?.let {body->
-                            error.value=body.error?.firstOrNull()?.errorMessage?:"Unknown Error"
+//                            error.value=body.error?.firstOrNull()?.errorMessage?:"Unknown Error"
                             user.value=body.data?: User()
                         }
                     }
                 }
             })
     }
-
-    private fun mockLogin()=User(11)
 }

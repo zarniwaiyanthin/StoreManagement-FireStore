@@ -30,7 +30,7 @@ class RegisterViewModel:BaseViewModel() {
                         if (response.isSuccessful){
                             response.body()?.let {
                                 responseMessage.value=it.responseMessage
-                                error.value=it.error?.firstOrNull()?.errorMessage?:"Unknown Error"
+//                                error.value=it.error?.firstOrNull()?.errorMessage?:"Unknown Error"
                             }
                         }
                     }

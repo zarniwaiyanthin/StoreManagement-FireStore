@@ -22,7 +22,7 @@ class CustomerAdapter(private val listener:CustomerListListener):BaseAdapter<Cus
     }
 
     override fun onBindViewHolder(holder: CustomerViewHolder, position: Int) {
-        val item=itemList.get(position)
+        val item= itemList[position]
         holder.itemView.tvUserName.text=item.name
         holder.itemView.tvPh.text=item.phoneNo
         holder.itemView.setOnClickListener {

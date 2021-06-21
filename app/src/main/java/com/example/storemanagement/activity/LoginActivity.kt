@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.provider.SyncStateContract
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.example.storemanagement.R
@@ -34,13 +35,17 @@ class LoginActivity:BaseActivity() {
             val name=etName.text.toString()
             val password=etPassword.text.toString()
 
-            //todo: validation
-
-            val req=LoginRequest(
-                userName = name,
-                password = password
-            )
-            loginViewModel.login(req)
+            when{
+                name.isBlank()-> Toast.makeText(this, "Please enter user name.", Toast.LENGTH_SHORT).show()
+                password.isBlank()-> Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show()
+                else->{
+                    val req=LoginRequest(
+                            userName = name,
+                            password = password
+                    )
+                    loginViewModel.login(req)
+                }
+            }
         }
 
         tvRegister.setOnClickListener {
@@ -50,9 +55,9 @@ class LoginActivity:BaseActivity() {
 
         loginViewModel.isLoading.observe(this, Observer { isLoading->
             if (isLoading){
-                //todo: show loading
+                progressBar.visibility= View.VISIBLE
             }else{
-                //todo: hide loading
+                progressBar.visibility=View.INVISIBLE
             }
         })
 

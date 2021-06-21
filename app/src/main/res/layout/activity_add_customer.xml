@@ -73,14 +73,24 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/size8"
         android:layout_marginLeft="@dimen/size8"
-        android:layout_marginTop="@dimen/size8"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:backgroundTint="@color/teal_200"
         android:text="@string/add_customer"
         android:textAppearance="@style/text.normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/containerPh" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

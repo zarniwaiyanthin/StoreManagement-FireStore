@@ -3,6 +3,7 @@ package com.example.storemanagement.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.example.storemanagement.R
@@ -25,18 +26,26 @@ class RegisterActivity:BaseActivity() {
 
         registerViewModel= RegisterViewModel()
 
-        val name=etName.text.toString()
-        val password=etPassword.text.toString()
-        val confirmPassword=etConfirmPassword.text.toString()
-
         btnRegister.setOnClickListener {
-                val req=RegisterRequest(
-                        name = name,
-                        password = password,
-                        deviceToken = "Sample Device Token"
-                )
-                registerViewModel.registerUser(req)
 
+            val name=etName.text.toString()
+            val password=etPassword.text.toString()
+            val confirmPassword=etConfirmPassword.text.toString()
+
+            when{
+                name.isBlank()-> Toast.makeText(this, "Please enter user name", Toast.LENGTH_SHORT).show()
+                password.isBlank()-> Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show()
+                confirmPassword.isBlank()-> Toast.makeText(this, "Please enter confirm password", Toast.LENGTH_SHORT).show()
+                password!=confirmPassword-> Toast.makeText(this, "Password and confirm password must be match", Toast.LENGTH_SHORT).show()
+                else->{
+                    val req=RegisterRequest(
+                            name = name,
+                            password = password,
+                            deviceToken = "Sample Device Token"
+                    )
+                    registerViewModel.registerUser(req)
+                }
+            }
         }
 
         registerViewModel.responseMessage.observe(this, Observer {
@@ -45,9 +54,9 @@ class RegisterActivity:BaseActivity() {
 
         registerViewModel.isLoading.observe(this, Observer {
             if (it){
-                //todo: show loading
+                progressBar.visibility= View.VISIBLE
             }else{
-                //todo: hide loading
+                progressBar.visibility=View.INVISIBLE
             }
         })
 

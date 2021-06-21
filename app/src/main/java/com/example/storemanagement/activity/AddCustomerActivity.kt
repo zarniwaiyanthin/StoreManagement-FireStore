@@ -2,7 +2,9 @@ package com.example.storemanagement.activity
 
 import android.content.Context
 import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.example.storemanagement.R
@@ -30,10 +32,11 @@ class AddCustomerActivity:BaseActivity(){
         val pref=getSharedPreferences(Constants.SHARE_PREF_NAME, Context.MODE_PRIVATE)
         val userId=pref.getInt(Constants.KEY_USER_ID,-1)
 
-        val name=etCustomerName.text.toString()
-        val phone=etPh.text.toString()
-
         btnAddCustomer.setOnClickListener {
+
+            val name=etCustomerName.text.toString()
+            val phone=etPh.text.toString()
+
             if (userId>0){
                 val req=AddCustomerRequest(
                         name = name,
@@ -50,9 +53,9 @@ class AddCustomerActivity:BaseActivity(){
 
         customerViewModel.isLoading.observe(this, Observer {
             if (it){
-                //todo: show loading
+                progressBar.visibility= View.VISIBLE
             }else{
-                //todo: hide loading
+                progressBar.visibility=View.INVISIBLE
             }
         })
 

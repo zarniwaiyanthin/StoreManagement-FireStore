@@ -16,6 +16,7 @@ class CustomerViewModel:BaseViewModel() {
     val error= MutableLiveData<String>()
     val customerList= MutableLiveData<List<Customer>>()
     val responseMessage=MutableLiveData<String>()
+    val isDelete=MutableLiveData<Boolean>()
 
     fun getCustomerList(userId:Int){
         isLoading.value=true
@@ -35,7 +36,7 @@ class CustomerViewModel:BaseViewModel() {
                         isLoading.value=false
                         response.body()?.let {body->
                             customerList.value=body.data?: listOf()
-                            error.value=body.error?.firstOrNull()?.errorMessage?:"Unknown Error"
+ //                           error.value=body.error?.firstOrNull()?.errorMessage?:"Unknown Error"
                         }
                     }
                 }
@@ -57,7 +58,7 @@ class CustomerViewModel:BaseViewModel() {
                             isLoading.value=false
                             response.body()?.let {
                                 responseMessage.value=it.responseMessage
-                                error.value=it.error?.firstOrNull()?.errorMessage?:"Unknown Error"
+//                                error.value=it.error?.firstOrNull()?.errorMessage?:"Unknown Error"
                             }
                         }
                     }
@@ -79,19 +80,13 @@ class CustomerViewModel:BaseViewModel() {
                         if (response.isSuccessful){
                             response.body()?.let {
                                 responseMessage.value=it.responseMessage
-                                error.value=it.error?.firstOrNull()?.errorMessage?:"Unknown Error"
+                                isDelete.value=it.data?:false
+//                                error.value=it.error?.firstOrNull()?.errorMessage?:"Unknown Error"
                             }
+                        }else{
+                            isDelete.value=false
                         }
                     }
                 })
     }
-
-    private fun generateCustomerList()= listOf<Customer>(Customer(1,"lee","000093241"),
-            Customer(2,"low","0921412341"),
-            Customer(2,"low","0921412341"),
-            Customer(2,"low","0921412341"),
-            Customer(2,"low","0921412341"),
-            Customer(2,"low","0921412341"),
-            Customer(2,"low","0921412341"),
-            Customer(2,"low","0921412341"))
 }
