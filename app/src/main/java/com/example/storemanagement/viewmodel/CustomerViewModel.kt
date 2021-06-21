@@ -19,8 +19,6 @@ class CustomerViewModel:BaseViewModel() {
 
     fun getCustomerList(userId:Int){
         isLoading.value=true
-        customerList.value=generateCustomerList()
-        return
         RestClient.getApiService()
             .getCustomerList(userId)
             .enqueue(object :Callback<CustomerListResponse>{
